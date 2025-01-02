@@ -13,6 +13,8 @@
   "description": "Full-Stack Auth component with mongodb: Production grade authentication",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie": "^1.0.2",
+    "cookie-parser": "^1.4.7",
     "crypto": "^1.0.1",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
