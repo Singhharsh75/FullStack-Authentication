@@ -1,4 +1,7 @@
+import { Route, Routes } from "react-router-dom";
 import FloatingCircles from "./components/FloatingCircles";
+import LogInPage from "./pages/LogInPage";
+import SignUpPage from "./pages/SignUpPage";
 
 function App() {
   return (
@@ -24,6 +27,11 @@ function App() {
         left="-10%"
         delay={5}
       />
+      <Routes>
+        <Route path="/" element={"Home"} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/login" element={<LogInPage />} />
+      </Routes>
     </div>
   );
 }
