@@ -42,7 +42,7 @@ const LogInPage = () => {
             }}
           />
           <div className="text-green-500 text-s mb-4"> Forgot Password ?</div>
-          <Button>Log In</Button>
+          <Button type="submit">Log In</Button>
         </form>
       </div>
       <div className="bg-gray-800 opacity-50 px-8 py-4">

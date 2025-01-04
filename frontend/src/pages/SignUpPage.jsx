@@ -7,8 +7,30 @@ import { Link } from "react-router-dom";
 import PasswordStrength from "../components/PasswordStrength";
 
 const SignUpPage = () => {
-  const submitFunc = () => {};
   const [data, setData] = useState({ name: "", email: "", password: "" });
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:5004/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+        }),
+      });
+      const dataVal = await response.json();
+      console.log("data", dataVal);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const submitFunc = async (e) => {
+    e.preventDefault();
+    await fetchData();
+  };
 
   //   useEffect(() => {
   //     console.log("data", data);
@@ -59,7 +81,7 @@ const SignUpPage = () => {
             icon={Lock}
           />
           <PasswordStrength password={data.password} />
-          <Button>Sign Up</Button>
+          <Button type="submit">Sign Up</Button>
           <div className="h-4"></div>
         </form>
       </div>
