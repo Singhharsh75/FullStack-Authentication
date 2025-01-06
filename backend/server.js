@@ -3,7 +3,10 @@ import authRoutes from './Routes/auth.routes.js';
 import connectDb from './Db/mongo.connect.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import path from 'node:path';
+
+dotenv.config();
 
 const app=express();
 const PORT=process.env.PORT||5004;

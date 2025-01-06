@@ -1,6 +1,10 @@
 import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE } from "./emailTemplate.js";
 import { client, sender } from "./mailtrap.js";
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 export const sendSignUpVerification=async(email,verificationToken)=>{
     const recipient=[{email}];
