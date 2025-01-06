@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import { useStore } from "./store/auth.store";
 import { useEffect } from "react";
 import DashBoardPage from "./pages/DashBoardPage";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const ProtectedHome = ({ children }) => {
   const { user, isAuthorized, isCheckingAuth } = useStore();
@@ -26,11 +27,10 @@ const ProtectedHome = ({ children }) => {
 
 const RedirectToHome = ({ children }) => {
   const { user, isAuthorized } = useStore();
-  console.log(user);
-  const navigate = useNavigate();
   if (isAuthorized && user.isVerified) {
     return <Navigate to="/" replace />;
   }
+  console.log(children);
   return children;
 };
 
@@ -41,6 +41,10 @@ function App() {
     // console.log(user, isCheckingAuth, isAuthorized);
     checkAuth();
   }, [checkAuth]);
+
+  if (isCheckingAuth) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900">
@@ -91,8 +95,22 @@ function App() {
           }
         />
         <Route path="/email-verify" element={<EmailVerification />} />
-        <Route path="/forgot-password-req" element={<ForgotPasswordReq />} />
-        <Route path="/forgot-password/:token" element={<ForgotPassword />} />
+        <Route
+          path="/forgot-password-req"
+          element={
+            <RedirectToHome>
+              <ForgotPasswordReq />
+            </RedirectToHome>
+          }
+        />
+        <Route
+          path="/forgot-password/:token"
+          element={
+            <RedirectToHome>
+              <ForgotPassword />
+            </RedirectToHome>
+          }
+        />
       </Routes>
       <Toaster />
     </div>

@@ -127,7 +127,7 @@ export const passwordResetReq=async(req,res)=>{
         console.log('password token:',token);
         await user.save();
 
-        const resetURL=`http://localhost:5173/forgot-password/${token}`;
+        const resetURL=`${process.env.CLIENT_URL}/forgot-password/${token}`;
         sendPasswordResetReq(user.email,resetURL)
 
         res.status(201).json({message:'password reset initiated'});

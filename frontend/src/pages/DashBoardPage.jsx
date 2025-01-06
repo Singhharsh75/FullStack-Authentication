@@ -4,7 +4,22 @@ import Button from "../components/Button";
 import { useStore } from "../store/auth.store";
 
 const DashBoardPage = () => {
-  const { logout } = useStore();
+  const { logout, user } = useStore();
+  const makeDate = (dateVal) => {
+    let date = new Date(dateVal);
+    if (isNaN(date)) {
+      return "Invalid Date!";
+    }
+    date = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+    return date;
+  };
   const handleClick = async () => {
     try {
       await logout();
@@ -22,7 +37,37 @@ const DashBoardPage = () => {
         <h1 className="text-3xl bg-gradient-to-r from-green-500 to-emerald-500 text-transparent bg-clip-text flex item-center justify-center mb-2">
           Dashboard Page
         </h1>
-        <></>
+        <div className="p-2 rounded-lg bg-gray-800 bg-opacity-80 flex flex-col gap-2 border border-slate-500">
+          <h1 className="text-xl text-green-500 mb-2 font-semibold">
+            User Info:
+          </h1>
+          <span className="text-slate-300">
+            {"Name: "}
+            {user.name}
+          </span>
+          <span className="text-slate-300">
+            {"Email Address: "}
+            {user.email}
+          </span>
+        </div>
+        <div className="p-2 mt-2 mb-4 rounded-lg bg-gray-800 bg-opacity-80 flex flex-col gap-2 border border-slate-500">
+          <h1 className="text-xl text-green-500 mb-2 font-semibold">
+            Login Info:
+          </h1>
+          <span className="text-slate-300">
+            {"Joined in: "}
+            {new Date(user.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </span>
+          <span className="text-slate-300">
+            {"Last logged in at: "}
+            {makeDate(user.lastLogin)}
+          </span>
+        </div>
+        <Button onClick={handleClick}>Log out</Button>
       </div>
     </motion.div>
   );
