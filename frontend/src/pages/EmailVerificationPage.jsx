@@ -2,14 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import { useStore } from "../store/auth.store";
+import toast from "react-hot-toast";
 
 const EmailVerification = () => {
   const [code, setCode] = useState(["", "", "", "", ""]);
   const navigate = useNavigate();
   const ref = useRef([]);
 
-  const handleClick = () => {
-    console.log("ji");
+  const { verify } = useStore();
+
+  const handleClick = async () => {
+    try {
+      await verify(code.join(""));
+      navigate("/");
+      toast.success("Email verified !!!");
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const handleButtonClick = (index, e) => {

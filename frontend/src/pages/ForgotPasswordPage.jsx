@@ -3,18 +3,30 @@ import { motion } from "framer-motion";
 import InputBox from "../components/InputBox";
 import { Lock } from "lucide-react";
 import Button from "../components/Button";
+import { useNavigate, useParams } from "react-router-dom";
+import { useStore } from "../store/auth.store";
 
 const ForgotPassword = () => {
   const [data, setData] = useState({ password: "", rePassword: "" });
   const [error, setError] = useState("");
+  const { token } = useParams();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const { passReset } = useStore();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (data.password !== data.rePassword) {
       setError("Dissimilar password. Re-enter !!");
     } else {
       setError("");
       setData({ password: "", rePassword: "" });
+      try {
+        await passReset(data.password, token);
+        navigate("/login");
+      } catch (error) {
+        console.log(error.message);
+      }
     }
   };
 

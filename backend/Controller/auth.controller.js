@@ -36,6 +36,7 @@ export const signup= async(req,res)=>{
             maxAge:24*60*60*1000
         })
         console.log('token',token);
+        res.status(201).json({message:"user has been added !!",user:user});
 
     } catch (error) {
         console.log(error.message);
@@ -49,6 +50,7 @@ export const verifyEmail=async(req,res)=>{
             verificationToken:code,
             verificationTokenExpiresAt:{$gt:Date.now()},
         })
+        console.log('user_data',user,code);
 
         if(!user){
             return res.status(400).json({
@@ -64,7 +66,7 @@ export const verifyEmail=async(req,res)=>{
 
         sendVerifiedConfirmationEmail(user.email,user.name);
 
-        res.status(200).json({message:'User verification email sent'});
+        res.status(200).json({message:'User verification email sent',user});
 
     } catch (error) {
         console.log(error.message);
@@ -72,7 +74,7 @@ export const verifyEmail=async(req,res)=>{
 }
 
 export const login=async (req,res)=>{
-    const {email,password,name}=req.body;
+    const {email,password}=req.body;
     try {
         const user=await User.findOne({email});
         if(!user){
@@ -92,17 +94,17 @@ export const login=async (req,res)=>{
         res.cookie("token",token,{
             httpOnly:true,
             sameSite:'strict',
-            secure:process.env.NODE_ENV,
+            secure:process.env.NODE_ENV==="production",
             maxAge:24*60*60*1000
         })
 
         console.log("token :",token)
+        res.status(200).json({message:'Login Successful',user});
 
     } catch (error) {
         console.log(error.message);
         res.status(400).json({message:'Error in login in !!'})
     }
-    res.status(200).json({'message':'Login Successful'});
 }
 
 export const logout=async (req,res)=>{
@@ -118,14 +120,14 @@ export const passwordResetReq=async(req,res)=>{
             return res.status(400).json({'message':"User does not exist !!"});
         }
 
-        const token=crypto.randomBytes(20).toString("hex");
+        const token=crypto.randomUUID(20).toString('hex');
         user.resetPasswordToken=token,
         user.resetPasswordTokenExpiresAt=Date.now()+60*60*1000,
         
         console.log('password token:',token);
         await user.save();
 
-        const resetURL=`http://localhost:5004/api/auth/reset-pass/${token}`;
+        const resetURL=`http://localhost:5173/forgot-password/${token}`;
         sendPasswordResetReq(user.email,resetURL)
 
         res.status(201).json({message:'password reset initiated'});
@@ -164,7 +166,7 @@ export const checkAuth=async(req,res)=>{
         if(!user){
             return res.status(400).json({message:"User not authorized!!!"})
         }
-        res.status(200).json({message:"User authorized!!!!"})    
+        res.status(200).json({message:"User authorized!!!!",user})    
     } catch (error) {
         console.log(error.message);
         res.status(400).json({message:"User not authorized!!!"})

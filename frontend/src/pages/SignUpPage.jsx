@@ -1,35 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import InputBox from "../components/InputBox";
-import { Lock, Mail, User } from "lucide-react";
+import { Loader, Lock, Mail, User } from "lucide-react";
 import Button from "../components/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordStrength from "../components/PasswordStrength";
+import { useStore } from "../store/auth.store";
 
 const SignUpPage = () => {
   const [data, setData] = useState({ name: "", email: "", password: "" });
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch("http://localhost:5004/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          ...data,
-        }),
-      });
-      const dataVal = await response.json();
-      console.log("data", dataVal);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  const navigate = useNavigate();
+  const { signup, error, isLoading } = useStore();
 
   const submitFunc = async (e) => {
     e.preventDefault();
-    await fetchData();
+    try {
+      await signup({ ...data });
+      navigate("/email-verify");
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   //   useEffect(() => {
@@ -80,8 +70,19 @@ const SignUpPage = () => {
             placeholder="Password"
             icon={Lock}
           />
+          {error ? (
+            <p className="text-red-600 flex item-center justify-center mb-2">
+              {error}
+            </p>
+          ) : null}
           <PasswordStrength password={data.password} />
-          <Button type="submit">Sign Up</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <Loader className="animate-spin mx-auto" size={24} />
+            ) : (
+              "Sign Up"
+            )}
+          </Button>
           <div className="h-4"></div>
         </form>
       </div>
