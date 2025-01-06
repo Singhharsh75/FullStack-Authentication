@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const backend_url = "http://localhost:5004";
+const backend_url =
+  import.meta.env.MODE === "development" ? "http://localhost:5004" : "";
 axios.defaults.withCredentials = true;
 export const useStore = create((set) => ({
   user: null,
